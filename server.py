@@ -26,12 +26,45 @@ import SocketServer
 
 # try: curl -v -X GET http://127.0.0.1:8080/
 
+import os
 
+verison="HTTP 1.1/"
+endLine="\r\n"
 class MyWebServer(SocketServer.BaseRequestHandler):
-    
+    def fileChecker(self,fileName):
+          findType=fileName.split(".")
+          fileType=findType[-1]
+          try:
+              openFile=open(os.getcwd()+"/www"+fileName,"r")
+              print ("exists")
+#              self.requestOK(self,fileType)
+               
+              openFile.close()
+          except:
+              try:
+                  openFile1=open(os.getcwd()+"/www/deep"+fileName,"r")
+                  print("exists")
+                  openFile1.close()
+              except:
+                  print ("DNE")
+          return
+    def error404(self):
+        error=version+" 404 Not Found"+endLine+"Content-Type:text/html"+endLine+endLine
+    def requestOK(self,fileType):
+        # if fileType=="html" or fileType=="css":
+                
+        #else:
+        return 0
     def handle(self):
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
+        
+        #Parsing the request
+        self.lineSplit=self.data.split("\n")
+        self.wordSplit=self.lineSplit[0].split(" ")
+        if self.wordSplit[1][-1]=="/":
+           self.wordSplit[1]=self.wordSplit[1]+"index.html"
+        self.fileChecker(self.wordSplit[1])
         self.request.sendall("OK")
 
 if __name__ == "__main__":
