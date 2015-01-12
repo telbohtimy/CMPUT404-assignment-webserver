@@ -30,16 +30,6 @@ import os
 version="HTTP/1.1"
 endLine="\r\n"
 class MyWebServer(SocketServer.BaseRequestHandler):
-    def fileChecker(self,fileName):
-          findType=fileName.split(".")
-          fileType=findType[-1]
-          try:
-              openFile=open(os.getcwd()+"/www"+fileName,"r")
-              contents=openFile.read() 
-              openFile.close()
-              return self.requestOK(fileType,contents)
-          except:
-              return self.error404()
     def error404(self):
         error=version+" 404 Not Found"+endLine
         error=error+"Content-Type:text/html"+endLine+endLine
@@ -65,8 +55,18 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         self.wordSplit=self.lineSplit[0].split(" ")
         if self.wordSplit[1][-1]=="/":
            self.wordSplit[1]=self.wordSplit[1]+"index.html"
-        response=self.fileChecker(self.wordSplit[1])
-        print(response)
+        findType=self.wordSplit[1].split(".")
+        fileType=findType[-1]
+        try:
+            openFile=open(os.getcwd()+"/www"+self.wordSplit[1],"r")
+            contents=openFile.read() 
+            openFile.close()
+            response= self.requestOK(fileType,contents)
+        except:
+            response=self.error404()
+
+       # response=self.fileChecker(self.wordSplit[1])
+       # print(response)
         self.request.sendall(response)
 
 if __name__ == "__main__":
