@@ -53,8 +53,9 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             codeOK=codeOK+"Content-Type: text/"+fileType+endLine+endLine
             codeOK=codeOK+contents
         else:
-            codeOK= version+" 200 OK"+endLine+endLine
-            codeOK=codeOK+contents
+            #codeOK= version+" 200 OK"+endLine+endLine
+            #codeOK=codeOK+contents
+            codeOK=self.error404()
         return codeOK
     def handle(self):
         self.data = self.request.recv(1024).strip()
