@@ -43,9 +43,9 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             codeOK=codeOK+"Content-Type: text/"+fileType+endLine+endLine
             codeOK=codeOK+contents
         else:
-            #codeOK= version+" 200 OK"+endLine+endLine
-            #codeOK=codeOK+contents
-            codeOK=self.error404()
+            codeOK= version+" 200 OK"+endLine+endLine
+            codeOK=codeOK+contents
+            #codeOK=self.error404()
         return codeOK
     def handle(self):
         self.data = self.request.recv(1024).strip()
@@ -61,7 +61,10 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             openFile=open(os.getcwd()+"/www"+self.wordSplit[1],"r")
             contents=openFile.read() 
             openFile.close()
-            response= self.requestOK(fileType,contents)
+            if "/../" in self.wordSplit[1]:
+                response=self.error404()
+            else:
+                response= self.requestOK(fileType,contents)
         except:
             response=self.error404()
 
