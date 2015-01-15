@@ -47,6 +47,13 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             codeOK=codeOK+contents
             #codeOK=self.error404()
         return codeOK
+    def redirect(self,URL):
+	redirect=version+" 301 Moved Permanently"+endLine
+	redirect=redirect+"Content-Type: text/html"+endLine+endLine
+	redirect=redirect+"<html><body>\n"
+	redirect=redirect+"<h1>Moved</h1>\n"
+	redirect=redirect+"<p>This page has moved: <a href="+URL+"> Go there</a></p>"
+	return redirect
     def handle(self):
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
@@ -66,10 +73,19 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             else:
                 response= self.requestOK(fileType,contents)
         except:
-            response=self.error404()
-
-       # response=self.fileChecker(self.wordSplit[1])
-       # print(response)
+	    try:
+		openFile1=open(os.getcwd()+"/www/deep/"+self.wordSplit[1],"r")
+       		contents=openFile1.read() 
+            	openFile1.close()
+		if "/../" in self.wordSplit[1]:
+                    response=self.error404()
+            	else:
+                    response= self.requestOK(fileType,contents)
+	    except:
+		if self.wordSplit[1][-5:]=="/deep":
+		    response=self.redirect("deep/index.html")
+		else:
+            	    response=self.error404()
         self.request.sendall(response)
 
 if __name__ == "__main__":
