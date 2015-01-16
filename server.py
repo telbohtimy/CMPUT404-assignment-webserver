@@ -52,7 +52,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
 	redirect=redirect+"Content-Type: text/html"+endLine+endLine
 	redirect=redirect+"<html><body>\n"
 	redirect=redirect+"<h1>Moved</h1>\n"
-	redirect=redirect+"<p>This page has been moved or does not exist: <a href="+URL+"> Try here</a></p>"
+	redirect=redirect+"<p>This page has been moved: <a href="+URL+"> Redirect me</a></p>"
 	return redirect
     def handle(self):
         self.data = self.request.recv(1024).strip()
@@ -82,7 +82,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             	else:
                     response= self.requestOK(fileType,contents)
 	    except:
-		if self.wordSplit[1][-5:]=="/deep":
+		if self.wordSplit[1]=="/deep":
 		    response=self.redirect("deep/index.html")
 		else:
             	    response=self.error404()
